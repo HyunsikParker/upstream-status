@@ -16,8 +16,8 @@ Built on Atlassian Forge for Codegeist 2026.
 - **Vendor status page** in every Jira project: each followed vendor's status now, open incidents and maintenance
   under way or starting within a day. Jira administrators choose the vendors there.
 - **Teamwork Graph connector**: when a site admin connects "Upstream vendor status", each vendor incident becomes a
-  document in the Teamwork Graph, so Rovo Search and Chat can answer questions such as "Did Cloudflare have problems
-  this week?" with the vendor's own updates.
+  document in the Teamwork Graph, with the vendor's updates as its text. Documents are among the object types that
+  Rovo Search and Chat use.
 - **Rovo agent "Upstream"** with three actions, `vendor-incidents-around`, `vendor-status-now` and
   `link-vendor-incident` (Rovo asks for confirmation before it adds a link), which the app also exposes as tools on the
   Atlassian MCP server. [`skills/upstream/SKILL.md`](skills/upstream/SKILL.md) tells a third-party agent how to use
@@ -32,10 +32,11 @@ Zoom, Twilio, Datadog, npm, Vercel, Netlify, DigitalOcean, Discord, Dropbox, Cir
 Shopify, Figma and MongoDB Cloud. Any other Statuspage-hosted page can be added by its page id. The app reads only the
 public Statuspage API (`/api/v2/summary.json`, `incidents.json`, `scheduled-maintenances.json`).
 
-Status pages are read in a queue consumer, one vendor per job, at most two at a time, and cached in Forge storage;
-pages read the cache and ask for a fresh read when it is older than five minutes, and an hourly trigger refreshes every
-followed vendor. Reads from Forge use each vendor's own status domain and a fresh connection per request, because
-reused connections stalled for about thirty seconds in our tests.
+Status pages are read in a queue consumer, one vendor per job, at most two at a time, and cached in Forge storage.
+The panel and the Vendor status page read the cache and ask for a fresh read when it is older than five minutes; an
+hourly trigger refreshes every followed vendor. Built-in vendors are read on their own status domains and a vendor
+added by page id through `<page id>.statuspage.io`, each request on a fresh connection, because reused connections
+stalled for about thirty seconds in our tests.
 
 ## How related is measured
 

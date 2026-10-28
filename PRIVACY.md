@@ -17,8 +17,8 @@ a site admin connects the Teamwork Graph connector, the app sends the vendors' p
 Graph of your site. Everything it writes stays in your Atlassian site.
 
 ## What the app stores
-Forge storage of the app holds the followed vendors, the Teamwork Graph connection ids and a cache of public vendor
-status data. The developer does not collect, receive or sell personal data. Atlassian's platform keeps its usual
+Forge storage of the app holds the followed vendors, the Teamwork Graph connection ids, a summary of the last update
+sent to the Teamwork Graph and a cache of public vendor status data. The developer does not collect, receive or sell personal data. Atlassian's platform keeps its usual
 operational logs for Forge apps; see Atlassian's privacy policy.
 
 ## Contact
