@@ -1,0 +1,196 @@
+modules:
+  jira:issuePanel:
+    - key: upstream-panel
+      resource: panel
+      resolver:
+        function: resolver
+      render: native
+      title: Vendor incidents
+      icon: resource:icons;upstream.svg
+  jira:projectPage:
+    - key: upstream-project
+      resource: project
+      resolver:
+        function: resolver
+      render: native
+      title: Vendor status
+  graph:connector:
+    - key: upstream-connector
+      name: Upstream vendor status
+      icons:
+        light: https://raw.githubusercontent.com/HyunsikParker/upstream-status/main/resources/icons/connector.png
+        dark: https://raw.githubusercontent.com/HyunsikParker/upstream-status/main/resources/icons/connector-dark.png
+      objectTypes:
+        - atlassian:document
+      capabilities:
+        replicatesPermissions: false
+        syncFidelity: upsert
+        supportsIncrementalSync: false
+      datasource:
+        formConfiguration:
+          instructions:
+            - "Upstream reads the public incident history of the Atlassian Statuspage status pages this site follows (chosen on the Vendor status page in any Jira project) and adds each incident as a document, updated every hour."
+            - "The data is public, so every user in the workspace can see it in Rovo Search and Chat."
+          form:
+            - key: history
+              type: header
+              title: Incident history
+              description: How far back to bring in vendor incidents.
+              properties:
+                - key: days
+                  label: Days of history, 1 to 30 (default 14)
+                  type: number
+                  isRequired: false
+          validateConnection:
+            function: validateConnection
+        onConnectionChange:
+          function: onConnectionChange
+  scheduledTrigger:
+    - key: upstream-sync
+      function: scheduledSync
+      interval: hour
+  consumer:
+    - key: vendor-refresh-consumer
+      queue: vendor-refresh
+      function: refreshVendor
+  rovo:agent:
+    - key: upstream-agent
+      name: Upstream
+      icon: resource:icons;upstream.svg
+      description: Tells service desk agents and on-call engineers whether a vendor
+        such as GitHub, Cloudflare or Zoom had an incident when a request came
+        in, with the vendor's own updates and links, and links the incident to
+        the request.
+      prompt: resource:agent;prompt.txt
+      conversationStarters:
+        - Could a vendor incident explain this request?
+        - Which of our vendors have problems right now?
+        - Link the matching vendor incident to this request
+      actions:
+        - vendor-incidents-around
+        - vendor-status-now
+        - link-vendor-incident
+  rovo:mcp:
+    - key: upstream-mcp
+      name: Upstream tools
+      tools:
+        - vendor-incidents-around
+        - vendor-status-now
+        - link-vendor-incident
+  action:
+    - key: vendor-incidents-around
+      name: Vendor incidents around
+      function: vendorIncidentsAround
+      actionVerb: GET
+      description: >
+        Lists the incidents and maintenance that the site's followed vendors
+        reported on their status pages around the time a Jira request or work
+        item came in, ranked with the reasons each may be related.
+      inputs:
+        issueKey:
+          title: Issue key
+          type: string
+          required: true
+          description: The key of the request or work item, for example ITS-42.
+        vendor:
+          title: Vendor
+          type: string
+          required: false
+          description: Only this vendor, for example GitHub.
+    - key: vendor-status-now
+      name: Vendor status now
+      function: vendorStatusNow
+      actionVerb: GET
+      description: >
+        Returns the current status of every vendor the site follows, with open
+        incidents and scheduled maintenance, read from their public status
+        pages.
+    - key: link-vendor-incident
+      name: Link vendor incident
+      function: linkVendorIncident
+      actionVerb: UPDATE
+      description: >
+        Adds a link from a Jira request or work item to a vendor's incident
+        page, for an incident returned by vendor-incidents-around.
+      inputs:
+        issueKey:
+          title: Issue key
+          type: string
+          required: true
+          description: The key of the request or work item, for example ITS-42.
+        vendor:
+          title: Vendor
+          type: string
+          required: true
+          description: The vendor, for example GitHub.
+        incidentId:
+          title: Incident id
+          type: string
+          required: true
+          description: The incident id from vendor-incidents-around.
+  function:
+    - key: resolver
+      handler: index.handler
+    - key: onConnectionChange
+      handler: index.onConnectionChange
+    - key: validateConnection
+      handler: index.validateConnection
+    - key: scheduledSync
+      handler: index.scheduledSync
+    - key: refreshVendor
+      handler: index.refreshVendor
+      timeoutSeconds: 120
+    - key: vendorIncidentsAround
+      handler: index.vendorIncidentsAround
+    - key: vendorStatusNow
+      handler: index.vendorStatusNow
+    - key: linkVendorIncident
+      handler: index.linkVendorIncident
+resources:
+  - key: panel
+    path: src/frontend/panel.jsx
+  - key: project
+    path: src/frontend/project.jsx
+  - key: agent
+    path: resources/agent
+  - key: icons
+    path: resources/icons
+app:
+  runtime:
+    name: nodejs24.x
+    memoryMB: 256
+    architecture: arm64
+  id: ari:cloud:ecosystem::app/69192be5-b55b-42c8-ae1a-32b2d30c9e18
+permissions:
+  scopes:
+    - read:jira-work
+    - write:jira-work
+    - read:jira-user
+    - storage:app
+    - write:object:jira
+    - read:object:jira
+    - delete:object:jira
+  external:
+    fetch:
+      backend:
+        - address: "*.statuspage.io"
+        - address: "www.githubstatus.com"
+        - address: "jira-software.status.atlassian.com"
+        - address: "confluence.status.atlassian.com"
+        - address: "bitbucket.status.atlassian.com"
+        - address: "www.cloudflarestatus.com"
+        - address: "status.zoom.us"
+        - address: "status.twilio.com"
+        - address: "status.datadoghq.com"
+        - address: "status.npmjs.org"
+        - address: "www.vercel-status.com"
+        - address: "www.netlifystatus.com"
+        - address: "status.digitalocean.com"
+        - address: "discordstatus.com"
+        - address: "status.dropbox.com"
+        - address: "status.circleci.com"
+        - address: "status.sentry.io"
+        - address: "status.anthropic.com"
+        - address: "www.shopifystatus.com"
+        - address: "status.figma.com"
+        - address: "status.mongodb.com"

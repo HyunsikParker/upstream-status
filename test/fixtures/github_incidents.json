@@ -1,0 +1,289 @@
+{
+ "page": {
+  "id": "kctbh9vrtdwd",
+  "name": "GitHub",
+  "url": "https://www.githubstatus.com",
+  "time_zone": "Etc/UTC",
+  "updated_at": "2026-10-28T15:15:25.893Z"
+ },
+ "incidents": [
+  {
+   "id": "l7ycmglmykgg",
+   "name": "Disruption with some Copilot services",
+   "status": "investigating",
+   "created_at": "2026-10-28T14:12:53.821Z",
+   "updated_at": "2026-10-28T15:15:25.875Z",
+   "monitoring_at": null,
+   "resolved_at": null,
+   "impact": "critical",
+   "shortlink": "https://stspg.io/bwcyq078jzms",
+   "started_at": "2026-10-28T14:12:53.814Z",
+   "page_id": "kctbh9vrtdwd",
+   "incident_updates": [
+    {
+     "id": "xm3jx0zs86q3",
+     "status": "investigating",
+     "body": "We have applied the mitigation and are seeing signs of recovery. We will continue to monitor and expect full resolution soon.",
+     "incident_id": "l7ycmglmykgg",
+     "created_at": "2026-10-28T15:15:25.873Z",
+     "updated_at": "2026-10-28T15:15:25.873Z",
+     "display_at": "2026-10-28T15:15:25.873Z",
+     "affected_components": null,
+     "deliver_notifications": true,
+     "custom_tweet": null,
+     "tweet_id": null
+    },
+    {
+     "id": "pgsl3mczkww8",
+     "status": "investigating",
+     "body": "We are experiencing degraded availability for the GPT-5.3-Codex, GPT-5.6 Luna, GPT-6.1 Sol, GPT-5.6 Terra, GPT-6 Luna, and MAI Code 1.1 Flash models in Copilot products and IDE surfaces. We have identified the root cause and working to apply a mitigation. While we work to resolve the issue we recommend choosing another model to continue using Copilot.",
+     "incident_id": "l7ycmglmykgg",
+     "created_at": "2026-10-28T14:55:32.445Z",
+     "updated_at": "2026-10-28T14:55:32.445Z",
+     "display_at": "2026-10-28T14:55:32.445Z",
+     "affected_components": null,
+     "deliver_notifications": true,
+     "custom_tweet": null,
+     "tweet_id": null
+    },
+    {
+     "id": "pl0cc021gtvj",
+     "status": "investigating",
+     "body": "We are experiencing degraded availability for the GPT-5.3-Codex, GPT-5.6 Luna, GPT-6.1 Sol, GPT-5.6 Terra, GPT-6 Luna, and MAI Code 1.1 Flash models in Copilot products and IDE surfaces. This is due to an issue with an upstream model provider. While we work with them to resolve the issue we recommend choosing another model to continue using Copilot.",
+     "incident_id": "l7ycmglmykgg",
+     "created_at": "2026-10-28T14:33:55.402Z",
+     "updated_at": "2026-10-28T14:33:55.402Z",
+     "display_at": "2026-10-28T14:33:55.402Z",
+     "affected_components": null,
+     "deliver_notifications": true,
+     "custom_tweet": null,
+     "tweet_id": null
+    }
+   ],
+   "components": [],
+   "reminder_intervals": null
+  },
+  {
+   "id": "dnslv7xdl4fj",
+   "name": "Elevated 404s for GitHub App s2s tokens in git/API",
+   "status": "resolved",
+   "created_at": "2026-10-27T08:00:00.000Z",
+   "updated_at": "2026-10-27T20:21:53.884Z",
+   "monitoring_at": null,
+   "resolved_at": "2026-10-27T08:00:00.000Z",
+   "impact": "none",
+   "shortlink": "https://stspg.io/4z5lmy7gqjk1",
+   "started_at": "2026-10-27T20:21:53.803Z",
+   "page_id": "kctbh9vrtdwd",
+   "incident_updates": [
+    {
+     "id": "vkjjy8pm6d6t",
+     "status": "resolved",
+     "body": "Between 0655 and 0801 UTC on 10/27, customers experienced increased failure rates for API and git requests authenticated with server-to-server tokens for GitHub Apps (excluding Actions tokens). During this window, authenticated git operations mistakenly returned 404 for 1.24% (2.6x) of requests on average and 2.49% (5.3x) at peak.\n\nThese failures were caused by a scheduled maintenance event where GitHub migrated 7 tables between two MySQL clusters in our IAD and Azure Central US datacenters. One of the affected tables stores installation records for GitHub App server-to-server tokens (excluding Actions). We've successfully completed several of these migrations in recent months without notable customer impact. However, in this case, the migration coincided with a scheduled cleanup job on the installation records table, which deleted approximately 59 million records from 0444-0617 UTC. As a result, the gh-ost tooling used in the migration experienced inter-cluster replication delays (up to 1 hour at peak).\n\nAt 0655 UTC, we begin transitioning reads of the target tables to the new MySQL cluster, with 100% of reads cutover at 0721 UTC. Customer impact began, but was not detected, throughout the read cutover and persisted until completion of the write cutover at 0801 UTC. We are updating our processes and automation to prevent a repeat of this incident, including disabling overlapping cleanup jobs prior to these migrations and blocking the cutover of reads when replication delays are high.",
+     "incident_id": "dnslv7xdl4fj",
+     "created_at": "2026-10-27T20:21:53.872Z",
+     "updated_at": "2026-10-27T20:21:53.872Z",
+     "display_at": "2026-10-27T08:00:00.000Z",
+     "affected_components": null,
+     "deliver_notifications": false,
+     "custom_tweet": null,
+     "tweet_id": null
+    }
+   ],
+   "components": [],
+   "reminder_intervals": null
+  },
+  {
+   "id": "f1vvv30224wd",
+   "name": "Incident with Actions, Issues, API Requests and Pull Requests",
+   "status": "resolved",
+   "created_at": "2026-10-26T18:48:26.235Z",
+   "updated_at": "2026-10-26T18:57:22.985Z",
+   "monitoring_at": "2026-10-26T18:50:58.284Z",
+   "resolved_at": "2026-10-26T18:57:22.958Z",
+   "impact": "minor",
+   "shortlink": "https://stspg.io/0622ty903b4d",
+   "started_at": "2026-10-26T18:48:26.225Z",
+   "page_id": "kctbh9vrtdwd",
+   "incident_updates": [
+    {
+     "id": "xylw81jsv04f",
+     "status": "resolved",
+     "body": "This incident has been resolved. Thank you for your patience and understanding as we addressed this issue. A detailed root cause analysis will be shared as soon as it is available.",
+     "incident_id": "f1vvv30224wd",
+     "created_at": "2026-10-26T18:57:22.958Z",
+     "updated_at": "2026-10-26T18:57:22.958Z",
+     "display_at": "2026-10-26T18:57:22.958Z",
+     "affected_components": [
+      {
+       "code": "brv1bkgrwx7q",
+       "name": "API Requests",
+       "old_status": "operational",
+       "new_status": "operational"
+      },
+      {
+       "code": "kr09ddfgbfsf",
+       "name": "Issues",
+       "old_status": "operational",
+       "new_status": "operational"
+      },
+      {
+       "code": "br0l2tvcx85d",
+       "name": "Actions",
+       "old_status": "operational",
+       "new_status": "operational"
+      },
+      {
+       "code": "hhtssxt0f5v2",
+       "name": "Pull Requests",
+       "old_status": "operational",
+       "new_status": "operational"
+      }
+     ],
+     "deliver_notifications": true,
+     "custom_tweet": null,
+     "tweet_id": null
+    },
+    {
+     "id": "vshvm0r3wg0d",
+     "status": "monitoring",
+     "body": "We saw elevated latency affecting REST API requests, including Checks, and some Actions, Issues, Pull Requests, and GraphQL functionality. Some requests may have been slow or timed out, and notifications were delayed from 17:59 UTC - 18:40 UTC.<br /><br />We mitigated the issue and all services have recovered.",
+     "incident_id": "f1vvv30224wd",
+     "created_at": "2026-10-26T18:54:04.333Z",
+     "updated_at": "2026-10-26T18:54:04.333Z",
+     "display_at": "2026-10-26T18:54:04.333Z",
+     "affected_components": [
+      {
+       "code": "brv1bkgrwx7q",
+       "name": "API Requests",
+       "old_status": "operational",
+       "new_status": "operational"
+      },
+      {
+       "code": "kr09ddfgbfsf",
+       "name": "Issues",
+       "old_status": "operational",
+       "new_status": "operational"
+      },
+      {
+       "code": "br0l2tvcx85d",
+       "name": "Actions",
+       "old_status": "operational",
+       "new_status": "operational"
+      },
+      {
+       "code": "hhtssxt0f5v2",
+       "name": "Pull Requests",
+       "old_status": "operational",
+       "new_status": "operational"
+      }
+     ],
+     "deliver_notifications": true,
+     "custom_tweet": null,
+     "tweet_id": null
+    },
+    {
+     "id": "kjr4k6wplf4j",
+     "status": "monitoring",
+     "body": "The degradation has been mitigated. We are monitoring to ensure stability.",
+     "incident_id": "f1vvv30224wd",
+     "created_at": "2026-10-26T18:50:58.284Z",
+     "updated_at": "2026-10-26T18:50:58.284Z",
+     "display_at": "2026-10-26T18:50:58.284Z",
+     "affected_components": [
+      {
+       "code": "brv1bkgrwx7q",
+       "name": "API Requests",
+       "old_status": "operational",
+       "new_status": "operational"
+      },
+      {
+       "code": "kr09ddfgbfsf",
+       "name": "Issues",
+       "old_status": "operational",
+       "new_status": "operational"
+      },
+      {
+       "code": "br0l2tvcx85d",
+       "name": "Actions",
+       "old_status": "operational",
+       "new_status": "operational"
+      },
+      {
+       "code": "hhtssxt0f5v2",
+       "name": "Pull Requests",
+       "old_status": "operational",
+       "new_status": "operational"
+      }
+     ],
+     "deliver_notifications": true,
+     "custom_tweet": null,
+     "tweet_id": null
+    }
+   ],
+   "components": [
+    {
+     "id": "brv1bkgrwx7q",
+     "name": "API Requests",
+     "status": "operational",
+     "created_at": "2017-01-31T20:01:46.621Z",
+     "updated_at": "2026-10-22T16:35:07.537Z",
+     "position": 4,
+     "description": "Requests for GitHub APIs",
+     "showcase": true,
+     "start_date": null,
+     "group_id": null,
+     "page_id": "kctbh9vrtdwd",
+     "group": false,
+     "only_show_if_degraded": false
+    },
+    {
+     "id": "kr09ddfgbfsf",
+     "name": "Issues",
+     "status": "operational",
+     "created_at": "2017-01-31T20:01:46.638Z",
+     "updated_at": "2026-10-22T17:41:38.560Z",
+     "position": 5,
+     "description": "Requests for Issues on GitHub.com",
+     "showcase": true,
+     "start_date": null,
+     "group_id": null,
+     "page_id": "kctbh9vrtdwd",
+     "group": false,
+     "only_show_if_degraded": false
+    },
+    {
+     "id": "hhtssxt0f5v2",
+     "name": "Pull Requests",
+     "status": "operational",
+     "created_at": "2020-09-02T15:39:06.329Z",
+     "updated_at": "2026-10-22T17:41:38.589Z",
+     "position": 6,
+     "description": "Requests for Pull Requests on GitHub.com",
+     "showcase": true,
+     "start_date": null,
+     "group_id": null,
+     "page_id": "kctbh9vrtdwd",
+     "group": false,
+     "only_show_if_degraded": false
+    },
+    {
+     "id": "br0l2tvcx85d",
+     "name": "Actions",
+     "status": "operational",
+     "created_at": "2019-11-13T18:02:19.432Z",
+     "updated_at": "2026-10-23T07:53:40.337Z",
+     "position": 7,
+     "description": "Workflows, Compute and Orchestration for GitHub Actions",
+     "showcase": true,
+     "start_date": null,
+     "group_id": null,
+     "page_id": "kctbh9vrtdwd",
+     "group": false,
+     "only_show_if_degraded": false
+    }
+   ],
+   "reminder_intervals": null
+  }
+ ]
+}
