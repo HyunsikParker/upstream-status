@@ -42,7 +42,8 @@ stalled for about thirty seconds in our tests.
 
 An incident counts when it was open at any time between the window's start and two hours after the request. Its
 score is recency (1 when open at the request time, then falling with the gap) times relevance (a base, plus the vendor
-named in the request, plus shared words with the incident name and affected components) times an impact weight. The
+named in the request, plus other words shared with the incident name and affected components) times an impact weight,
+which is lower for maintenance and lowest when the vendor says there is no impact. The
 panel shows "Likely related", "Possibly related" or "Unlikely" with the reasons in words. A vendor incident that
 overlaps in time is a lead, not proof.
 

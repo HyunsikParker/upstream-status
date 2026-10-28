@@ -38,3 +38,16 @@ test('a request that names nothing still sees open incidents, ranked lower', () 
   assert.ok(r.length >= 2);
   assert.ok(r.every((x) => x.score < 0.6 || x.why.some((w) => w.startsWith('Shared'))));
 });
+
+test('maintenance the vendor says has no impact stays unlikely even when the request names the vendor', () => {
+  const m = normalizeIncident(zoom, { id: 'm1', name: 'Zoom Chat Backend Update: October, 2026 (No Operational Impact)', status: 'in_progress', impact: 'maintenance', created_at: actions.startedAt, scheduled_for: actions.startedAt, scheduled_until: new Date(Date.parse(actions.startedAt) + 86400000).toISOString(), incident_updates: [], components: [] });
+  const q = normalizeIncident(zoom, { id: 'q1', name: 'Service Degradation Affecting the Evaluations Acknowledge Button in Zoom Quality Management', status: 'identified', impact: 'minor', created_at: actions.startedAt, started_at: actions.startedAt, incident_updates: [], components: [{ name: 'Zoom Quality Management' }] });
+  const r = rankIncidents({ at, text: 'Zoom Quality Management not working for several of us' }, [m, q, ...ghIncidents], [gh, zoom]);
+  assert.equal(r[0].id, 'q1');
+  assert.equal(r[0].band, 'likely');
+  assert.ok(!r[0].why.some((w) => /Shared words:.*zoom/.test(w)));
+  const mm = r.find((x) => x.id === 'm1');
+  assert.equal(mm.band, 'unlikely');
+  assert.ok(mm.why.includes('The vendor says it has no impact'));
+  assert.ok(r.filter((x) => x.vendor === 'github').every((x) => x.band === 'unlikely'));
+});
