@@ -18,8 +18,10 @@ export function pickIncidents(incidents, now = new Date().toISOString(), limit =
 export function buildSample(picked) {
   const items = picked.map((i) => {
     const what = i.components[0] || i.name.replace(/^(Incident with|Disruption with|Degraded performance for)\s+/i, '').replace(/^some\s+/i, '');
+    // "Zoom Quality Management", not "Zoom Zoom Quality Management".
+    const subject = what.toLowerCase().startsWith(i.vendorName.toLowerCase()) ? what : `${i.vendorName} ${what}`;
     return {
-      summary: `${i.vendorName} ${what} not working for several of us`,
+      summary: `${subject} not working for several of us`,
       description: `Several people in the team report problems with ${i.vendorName} (${what}) since this morning. Sample request created by Upstream from a real incident on the vendor's status page.`,
       at: isoSeconds(toMs(i.startedAt) + 15 * 60000),
       incident: `${i.vendorName}: ${i.name}`,

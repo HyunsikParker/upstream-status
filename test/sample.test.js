@@ -24,6 +24,11 @@ test('samples are dated a quarter of an hour into their incident, with one unrel
   assert.equal(s.length, 3);
 });
 
+test('a component named after the vendor is not repeated in the summary', () => {
+  const s = buildSample([inc('zoom', 'Zoom', 'z', '2026-10-28T14:31:00Z', 'minor', ['Zoom Quality Management'])]);
+  assert.equal(s[0].summary, 'Zoom Quality Management not working for several of us');
+});
+
 test('seeding creates service requests when the project has them, with the time as a property', async () => {
   const calls = [];
   let n = 0;

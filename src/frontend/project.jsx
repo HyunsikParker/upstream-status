@@ -84,7 +84,7 @@ function Sample() {
       <Heading size="small">Sample requests</Heading>
       <Text>Creates a few requests in this project, each timed a quarter of an hour into a real incident from the last two weeks on a followed vendor's status page, plus one unrelated request for contrast.</Text>
       <Inline><Button isDisabled={state?.busy || state?.ok} onClick={load}>{state?.busy ? 'Creating requests…' : 'Load sample requests'}</Button></Inline>
-      {state?.ok && <SectionMessage appearance="success"><Text>{`Created ${state.keys.join(', ')} (label ${state.label}), based on: ${state.based.join('; ')}.`}</Text></SectionMessage>}
+      {state?.ok && <SectionMessage appearance="success"><Text>{`Created ${state.keys.join(', ')}, based on: ${state.based.join('; ')}.`}</Text></SectionMessage>}
       {state && state.ok === false && <SectionMessage appearance="error"><Text>{state.error}</Text></SectionMessage>}
     </Stack>
   );
