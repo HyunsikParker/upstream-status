@@ -30,7 +30,7 @@ function Board({ states, timeZone }) {
         key: s.vendor,
         cells: [
           { key: 'v', content: <Link href={s.url} openNewTab>{s.name}</Link> },
-          { key: 's', content: <Stack space="space.050"><VendorState indicator={s.indicator} /><Text size="small">{s.degradedCount ? `${s.degradedCount} component${s.degradedCount === 1 ? '' : 's'} degraded` : s.description}</Text></Stack> },
+          { key: 's', content: <Stack space="space.050"><VendorState indicator={s.indicator} /><Text size="small">{s.description}</Text>{s.degradedCount ? <Text size="small">{`${s.degradedCount} component${s.degradedCount === 1 ? '' : 's'} not operational`}</Text> : null}</Stack> },
           { key: 'i', content: <Happening s={s} timeZone={timeZone} /> },
         ],
       }))}

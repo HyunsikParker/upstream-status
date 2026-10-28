@@ -10,7 +10,8 @@ export function Band({ band }) {
   return <Inline><Lozenge appearance={appearance}>{label}</Lozenge></Inline>;
 }
 
-const STATE = { none: ['success', 'Operational'], minor: ['moved', 'Minor issues'], major: ['removed', 'Major outage'], critical: ['removed', 'Critical outage'], maintenance: ['inprogress', 'Maintenance'], unknown: ['default', 'Unknown'] };
+// Statuspage indicators: minor is a minor service outage, major a partial system outage, critical a major one.
+const STATE = { none: ['success', 'Operational'], minor: ['moved', 'Minor issues'], major: ['removed', 'Partial outage'], critical: ['removed', 'Major outage'], maintenance: ['inprogress', 'Maintenance'], unknown: ['default', 'Unknown'] };
 export function VendorState({ indicator }) {
   const [appearance, label] = STATE[indicator] || STATE.unknown;
   return <Inline><Lozenge appearance={appearance}>{label}</Lozenge></Inline>;
