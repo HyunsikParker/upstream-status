@@ -25,6 +25,16 @@ Built on Atlassian Forge for Codegeist 2026.
 - **Load sample requests** creates a few requests timed a quarter of an hour into real incidents from the last two
   weeks on the followed vendors' status pages, plus one unrelated request for contrast.
 
+## Screenshots
+
+![The Vendor incidents panel on a request: incidents open before it came in, ranked, each with the reasons it is there.](docs/images/2-vendor-incidents-panel.jpg)
+
+![Vendor status page: what each followed vendor reports now, in its own words, with open incidents and maintenance.](docs/images/1-vendor-status.jpg)
+
+![Vendor incidents are Teamwork Graph documents: Rovo Search finds GitHub's Copilot incident next to the requests about it.](docs/images/7-rovo-search.jpg)
+
+The requests are sample data; the vendor incidents come from the vendors' public status pages.
+
 ## Vendors
 
 Twenty vendors that publish on Atlassian Statuspage are built in: GitHub, Jira, Confluence, Bitbucket, Cloudflare,
