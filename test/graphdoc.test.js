@@ -15,6 +15,8 @@ test('a vendor incident becomes a Teamwork Graph document', () => {
   assert.match(d.createdAt, /^\d{4}-\d\d-\d\dT\d\d:\d\d:\d\dZ$/);
   assert.equal(d.permissions[0].accessControls[0].principals[0].type, 'ATLASSIAN_WORKSPACE');
   assert.equal(d['atlassian:document'].content.mimeType, 'text/plain');
+  // The ingestion API accepted DOCUMENT and rejected web_page, WEB_PAGE and document (2026-10-28).
+  assert.equal(d['atlassian:document'].type.category, 'DOCUMENT');
   assert.ok(d['atlassian:document'].labels.includes('github'));
   assert.ok(Number.isFinite(d.updateSequenceNumber));
 });

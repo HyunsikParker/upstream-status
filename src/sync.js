@@ -20,7 +20,7 @@ export async function pushToGraph(incidents, only) {
       const res = await graph.setObjects({ objects: docs.slice(i, i + 100), connectionId: conn.id });
       accepted += res.results?.accepted?.length || 0;
       rejected.push(...(res.results?.rejected || []).map((r) => ({ id: r.key?.entityId, error: r.errors?.[0]?.message })));
-      if (!res.success && res.error) rejected.push({ error: String(res.error).slice(0, 200) });
+      if (!res.success && res.error) rejected.push({ error: String(res.error).slice(0, 1500) });
     }
   }
   return { connections: connections.length, documents, accepted, rejected: rejected.slice(0, 5) };

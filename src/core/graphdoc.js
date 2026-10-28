@@ -22,7 +22,7 @@ export function toDocument(inc) {
     lastUpdatedAt: iso(inc.updatedAt),
     permissions: [{ accessControls: [{ principals: [{ type: 'ATLASSIAN_WORKSPACE' }] }] }],
     'atlassian:document': {
-      type: { category: 'web_page', mimeType: 'text/plain' },
+      type: { category: 'DOCUMENT', mimeType: 'text/plain' },
       content: { mimeType: 'text/plain', text: incidentText(inc) },
       labels: ['vendor-incident', inc.vendor, inc.maintenance ? 'maintenance' : inc.impact, inc.status],
     },
