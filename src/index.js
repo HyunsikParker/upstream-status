@@ -6,7 +6,7 @@ import { buildSample, pickIncidents, seedSample, SAMPLE_LABEL } from './core/sam
 import { adfText } from './core/text.js';
 import { isoSeconds, toMs } from './core/time.js';
 import { fetchVendor } from './statuspage-api.js';
-import { readVendors, requestRefresh, writeVendor } from './cache.js';
+import { readMeta, readVendors, requestRefresh, storeVendor, storeVendorError } from './cache.js';
 import { slimVendor } from './core/slim.js';
 import { getConnections, getLastSync, getSettings, saveSettings, setConnection } from './settings.js';
 import { daysOf, pushToGraph, recordSync } from './sync.js';
@@ -153,21 +153,22 @@ export async function scheduledSync() {
 }
 
 // Queue consumer: read one vendor's status page, cache it, and push its incidents to the Teamwork Graph.
+// Only the vendor's small record is read first; the cached incidents are rewritten only when they changed.
 export async function refreshVendor(event) {
-  const { key, custom } = event.body || {};
+  const { key, custom, connections } = event.body || {};
   const vendor = custom ? customVendor(custom.pageId, custom.name) : VENDORS.find((v) => v.key === key);
   if (!vendor) return;
-  const { byKey } = await readVendors([vendor]);
-  const prev = byKey[vendor.key];
+  const prev = await readMeta(vendor.key);
+  let stored = null;
   try {
     const t0 = Date.now();
     const data = slimVendor(await fetchVendor(vendor));
-    await writeVendor(vendor.key, { fetchedAt: new Date().toISOString(), ...data });
-    console.log('vendor refreshed', vendor.key, data.incidents.length, Date.now() - t0);
-    const r = await pushToGraph(data.incidents);
+    stored = await storeVendor(vendor.key, data, prev);
+    console.log('vendor refreshed', vendor.key, data.incidents.length, Date.now() - t0, stored.changed ? 'changed' : 'unchanged');
+    const r = await pushToGraph(data.incidents, null, connections);
     if (r.connections) await recordSync(vendor.key, r);
   } catch (e) {
-    await writeVendor(vendor.key, { ...(prev || {}), error: String(e.message || e).slice(0, 200), errorAt: new Date().toISOString() });
+    await storeVendorError(vendor.key, stored ? { ...(prev || {}), hash: stored.hash } : prev, String(e.message || e).slice(0, 200));
     console.log('vendor refresh failed', vendor.key, String(e.message || e).slice(0, 200));
   }
 }

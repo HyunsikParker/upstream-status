@@ -1,13 +1,14 @@
 // Puts vendor incidents into the Teamwork Graph for every connection the site admin made.
 import { graph } from '@forge/teamwork-graph';
 import { toDocument } from './core/graphdoc.js';
-import { getConnections, setLastSync, getLastSync } from './settings.js';
+import { getConnections, setVendorSync } from './settings.js';
 
 export const DEFAULT_DAYS = 14;
 export const daysOf = (value) => (Number.isFinite(Number(value)) && Number(value) >= 1 && Number(value) <= 30 ? Math.round(Number(value)) : DEFAULT_DAYS);
 
-export async function pushToGraph(incidents, only) {
-  const connections = only ? [only] : await getConnections();
+// `known` is the connection list that came with a refresh event; without it the list is read from storage.
+export async function pushToGraph(incidents, only, known) {
+  const connections = only ? [only] : known || (await getConnections());
   if (connections.length === 0 || incidents.length === 0) return { connections: connections.length, documents: 0, accepted: 0, rejected: [] };
   let accepted = 0;
   let documents = 0;
@@ -28,11 +29,8 @@ export async function pushToGraph(incidents, only) {
 
 // Running totals per vendor, so the Vendor status page can say what the graph holds.
 export async function recordSync(vendorKey, result) {
-  const last = (await getLastSync()) || { vendors: {} };
-  last.vendors = { ...(last.vendors || {}), [vendorKey]: { at: new Date().toISOString(), accepted: result.accepted, documents: result.documents, rejected: result.rejected } };
-  last.at = new Date().toISOString();
-  last.accepted = Object.values(last.vendors).reduce((n, v) => n + (v.accepted || 0), 0);
-  await setLastSync(last);
+  const entry = { at: new Date().toISOString(), accepted: result.accepted, documents: result.documents, rejected: result.rejected };
+  await setVendorSync(vendorKey, entry);
   if (result.rejected.length) console.log('graph rejected', vendorKey, JSON.stringify(result.rejected));
-  return last;
+  return entry;
 }

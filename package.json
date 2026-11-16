@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "test": "node --no-warnings=MODULE_TYPELESS_PACKAGE_JSON --test test/*.test.js"
+    "test": "node --no-warnings=MODULE_TYPELESS_PACKAGE_JSON --no-warnings=ExperimentalWarning --experimental-test-module-mocks --test test/*.test.js"
   },
   "dependencies": {
     "@forge/api": "8.4.0",
